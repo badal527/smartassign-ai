@@ -1,144 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>SmartAssign AI Pro</title>
-
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background: linear-gradient(135deg,#0f172a,#1e293b);
-  color:white;
-  text-align:center;
-}
-
-.container{
-  margin-top:80px;
-}
-
-h1{
-  font-size:42px;
-}
-
-input, select{
-  padding:12px;
-  width:260px;
-  border-radius:10px;
-  border:none;
-  margin:5px;
-}
-
-button{
-  padding:12px 20px;
-  border:none;
-  border-radius:10px;
-  background:#22c55e;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-}
-
-button:hover{
-  background:#16a34a;
-}
-
-#out{
-  margin:30px auto;
-  width:85%;
-  max-width:600px;
-  background:#111827;
-  padding:20px;
-  border-radius:15px;
-  text-align:left;
-}
-
-.suggestions button{
-  margin:5px;
-  background:#334155;
-}
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-<h1>🚀 SmartAssign AI Pro</h1>
-<p>Generate smart assignments instantly</p>
-
-<input type="text" id="topic" placeholder="Enter topic">
-
-<br>
-
-<select id="length">
-<option value="short">Short (100 words)</option>
-<option value="medium">Medium (200 words)</option>
-<option value="long">Long (300 words)</option>
-</select>
-
-<br><br>
-
-<button onclick="gen()">Generate</button>
-<button onclick="download()">Download</button>
-
-<div class="suggestions">
-<p>Quick Topics:</p>
-<button onclick="setTopic('AI in Education')">AI in Education</button>
-<button onclick="setTopic('Climate Change')">Climate Change</button>
-<button onclick="setTopic('Blockchain')">Blockchain</button>
-</div>
-
-<div id="out"></div>
-</div>
-
 <script>
-function setTopic(t){
-  document.getElementById("topic").value = t;
-}
-
-function gen(){
+async function gen() {
   let topic = document.getElementById("topic").value;
-  let length = document.getElementById("length").value;
 
   if(topic.trim() === ""){
-    document.getElementById("out").innerHTML = "Please enter a topic";
+    document.getElementById("out").innerHTML = "Enter topic first";
     return;
   }
 
-  let bodyText = "";
-  if(length==="short"){
-    bodyText = "This topic is important and widely used in modern world.";
-  } else if(length==="medium"){
-    bodyText = "This topic plays a significant role in today's society. It helps improve efficiency, productivity, and innovation across various fields.";
-  } else {
-    bodyText = "This topic is highly important in the modern era. It influences multiple industries and contributes to growth and development. It improves efficiency, supports innovation, and enhances learning in different sectors.";
-  }
+  document.getElementById("out").innerHTML = "Generating...";
 
-  let result = `
-  <h2>${topic}</h2>
-  <p><b>Introduction:</b> ${topic} is an important concept in modern education.</p>
-  <p><b>Body:</b> ${bodyText}</p>
-  <p><b>Conclusion:</b> ${topic} has a strong future and will continue to grow.</p>
-  `;
+  let res = await fetch("http://localhost:3000/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ topic })
+  });
 
-  document.getElementById("out").innerHTML = result;
-}
-
-function download(){
-  let content = document.getElementById("out").innerText;
-
-  if(content === ""){
-    alert("Generate assignment first!");
-    return;
-  }
-
-  let blob = new Blob([content], { type: "text/plain" });
-  let link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "assignment.txt";
-  link.click();
+  let data = await res.json();
+  document.getElementById("out").innerHTML = data.result;
 }
 </script>
-
-</body>
-</html>
