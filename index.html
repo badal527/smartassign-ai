@@ -2,22 +2,90 @@
 <html>
 <head>
 <title>SmartAssign AI</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background: linear-gradient(135deg,#0f172a,#1e293b);
+  color:white;
+  text-align:center;
+}
+
+.container{
+  margin-top:100px;
+}
+
+h1{
+  font-size:40px;
+}
+
+input{
+  padding:12px;
+  width:260px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+}
+
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:10px;
+  background:#22c55e;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#16a34a;
+}
+
+#out{
+  margin:30px auto;
+  width:80%;
+  max-width:500px;
+  background:#111827;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 0 20px rgba(0,0,0,0.5);
+  text-align:left;
+}
+</style>
+
 </head>
 
-<body style="background:black;color:white;text-align:center">
+<body>
 
-<h1>SmartAssign AI</h1>
+<div class="container">
+<h1>🚀 SmartAssign AI</h1>
+<p>Generate assignments instantly using AI</p>
 
 <input type="text" id="topic" placeholder="Enter topic">
+<br><br>
 <button onclick="gen()">Generate</button>
 
 <div id="out"></div>
+</div>
 
 <script>
-function gen(){
- let t=document.getElementById("topic").value;
- document.getElementById("out").innerHTML =
- "<h2>"+t+"</h2><p>This is AI generated assignment on "+t+"</p>";
+function gen() {
+    let topic = document.getElementById("topic").value;
+
+    if(topic.trim() === ""){
+        document.getElementById("out").innerHTML = "<p>Please enter a topic</p>";
+        return;
+    }
+
+    let result = `
+    <h2>${topic}</h2>
+    <p><b>Introduction:</b> ${topic} is an important topic in modern education.</p>
+    <p><b>Body:</b> It helps improve productivity and learning.</p>
+    <p><b>Conclusion:</b> ${topic} has a strong future with AI.</p>
+    `;
+
+    document.getElementById("out").innerHTML = result;
 }
 </script>
 
