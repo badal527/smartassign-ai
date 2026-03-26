@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SmartAssign AI</title>
+</head>
+
+<body style="background:black;color:white;text-align:center">
+
+<h1>SmartAssign AI</h1>
+
+<input type="text" id="topic" placeholder="Enter topic">
+<button onclick="gen()">Generate</button>
+
+<div id="out"></div>
+
+<script>
+function gen(){
+ let t=document.getElementById("topic").value;
+ document.getElementById("out").innerHTML =
+ "<h2>"+t+"</h2><p>This is AI generated assignment on "+t+"</p>";
+}
+</script>
+
+</body>
+</html>
