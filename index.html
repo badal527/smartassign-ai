@@ -2,12 +2,12 @@
 async function gen() {
   let topic = document.getElementById("topic").value;
 
-  if(topic.trim() === ""){
+  if (!topic || topic.trim() === "") {
     document.getElementById("out").innerHTML = "Enter topic first";
     return;
   }
 
-  document.getElementById("out").innerHTML = "⏳ Generating AI response...";
+  document.getElementById("out").innerHTML = "⏳ Loading AI...";
 
   try {
     let res = await fetch("https://ai-server-tfpt.onrender.com/generate", {
@@ -20,14 +20,14 @@ async function gen() {
 
     let data = await res.json();
 
-    if(data.result){
-      typeEffect(data.result);
+    if (data.result) {
+      document.getElementById("out").innerHTML = data.result;
     } else {
-      document.getElementById("out").innerHTML = "❌ AI not responding";
+      document.getElementById("out").innerHTML = "AI not responding";
     }
 
-  } catch (e) {
-    document.getElementById("out").innerHTML = "❌ Server error / Render sleeping";
+  } catch (err) {
+    document.getElementById("out").innerHTML = "Server error";
   }
 }
 </script>
