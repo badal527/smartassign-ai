@@ -25,7 +25,48 @@ input, select{
   width:260px;
   border-radius:10px;
   border:none;
-  margin:5px;
+<!DOCTYPE html>
+<html>
+<head>
+<title>SmartAssign AI Pro</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background: linear-gradient(-45deg,#0f172a,#1e293b,#020617,#0f172a);
+  background-size: 400% 400%;
+  animation: gradient 8s ease infinite;
+  color:white;
+  text-align:center;
+}
+
+@keyframes gradient{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+.container{
+  margin-top:80px;
+}
+
+.box{
+  background: rgba(255,255,255,0.05);
+  padding:30px;
+  border-radius:20px;
+  backdrop-filter: blur(10px);
+  width:90%;
+  max-width:500px;
+  margin:auto;
+}
+
+input{
+  padding:12px;
+  width:80%;
+  border-radius:10px;
+  border:none;
+  margin:10px;
 }
 
 button{
@@ -34,27 +75,28 @@ button{
   border-radius:10px;
   background:#22c55e;
   color:white;
-  font-size:16px;
   cursor:pointer;
 }
 
-button:hover{
-  background:#16a34a;
-}
-
 #out{
-  margin:30px auto;
-  width:85%;
-  max-width:600px;
-  background:#111827;
-  padding:20px;
-  border-radius:15px;
+  margin-top:20px;
   text-align:left;
+  white-space: pre-line;
 }
 
-.suggestions button{
-  margin:5px;
-  background:#334155;
+.loader{
+  border:4px solid #333;
+  border-top:4px solid #22c55e;
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  animation: spin 1s linear infinite;
+  margin:auto;
+}
+
+@keyframes spin{
+  0%{transform:rotate(0);}
+  100%{transform:rotate(360deg);}
 }
 </style>
 
@@ -63,80 +105,57 @@ button:hover{
 <body>
 
 <div class="container">
-<h1>🚀 SmartAssign AI Pro</h1>
-<p>Generate smart assignments instantly</p>
+<h1>🤖 SmartAssign AI</h1>
 
-<input type="text" id="topic" placeholder="Enter topic">
+<div class="box">
 
+<input id="topic" placeholder="Enter topic">
 <br>
-
-<select id="length">
-<option value="short">Short (100 words)</option>
-<option value="medium">Medium (200 words)</option>
-<option value="long">Long (300 words)</option>
-</select>
-
-<br><br>
-
 <button onclick="gen()">Generate</button>
-<button onclick="download()">Download</button>
-
-<div class="suggestions">
-<p>Quick Topics:</p>
-<button onclick="setTopic('AI in Education')">AI in Education</button>
-<button onclick="setTopic('Climate Change')">Climate Change</button>
-<button onclick="setTopic('Blockchain')">Blockchain</button>
-</div>
 
 <div id="out"></div>
+
+</div>
 </div>
 
 <script>
-function setTopic(t){
-  document.getElementById("topic").value = t;
-}
-
-function gen(){
+async function gen() {
   let topic = document.getElementById("topic").value;
-  let length = document.getElementById("length").value;
 
   if(topic.trim() === ""){
-    document.getElementById("out").innerHTML = "Please enter a topic";
+    document.getElementById("out").innerHTML = "Enter topic first";
     return;
   }
 
-  let bodyText = "";
-  if(length==="short"){
-    bodyText = "This topic is important and widely used in modern world.";
-  } else if(length==="medium"){
-    bodyText = "This topic plays a significant role in today's society. It helps improve efficiency, productivity, and innovation across various fields.";
-  } else {
-    bodyText = "This topic is highly important in the modern era. It influences multiple industries and contributes to growth and development. It improves efficiency, supports innovation, and enhances learning in different sectors.";
-  }
+  document.getElementById("out").innerHTML = '<div class="loader"></div>';
 
-  let result = `
-  <h2>${topic}</h2>
-  <p><b>Introduction:</b> ${topic} is an important concept in modern education.</p>
-  <p><b>Body:</b> ${bodyText}</p>
-  <p><b>Conclusion:</b> ${topic} has a strong future and will continue to grow.</p>
-  `;
+  let res = await fetch("https://ai-server-tfpt.onrender.com/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ topic })
+  });
 
-  document.getElementById("out").innerHTML = result;
+  let data = await res.json();
+
+  typeEffect(data.result);
 }
 
-function download(){
-  let content = document.getElementById("out").innerText;
+function typeEffect(text){
+  let i=0;
+  let speed=20;
+  let out=document.getElementById("out");
+  out.innerHTML="";
 
-  if(content === ""){
-    alert("Generate assignment first!");
-    return;
+  function typing(){
+    if(i<text.length){
+      out.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typing,speed);
+    }
   }
-
-  let blob = new Blob([content], { type: "text/plain" });
-  let link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "assignment.txt";
-  link.click();
+  typing();
 }
 </script>
 
